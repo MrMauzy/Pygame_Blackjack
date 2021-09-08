@@ -49,17 +49,8 @@ cards = { club_A:1, club_2:2, club_3:3, club_4:4, club_5:5, club_6:6, club_7:7,
 
 def draw_window():
     WIN.fill(GREEN)
-    # WIN.blit(cBackR, (300,100))
     pygame.display.update()
-
-"""     WIN.blit(club_AR, (300,400))
-    WIN.blit(club_QR, (310,400))
-    WIN.blit(club_KR, (330,400))
-    WIN.blit(club_JR, (350,400))
-    WIN.blit(club_2R, (390,400))
-    WIN.blit(club_5R, (410,400)) """
     
-
 def main():
 
     #cards = [club_J, club_A, club_2, club_3]
