@@ -2,9 +2,12 @@ import pygame
 import random
 import os
 
+pygame.font.init()
+
 WIDTH, HEIGHT = 900, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 CARD_WIDTH, CARD_HEIGHT = 120, 160
+font = pygame.font.SysFont('Comic Sans MS', 32)
 pygame.display.set_caption("Blackjack!")
 
 # Image Loading
@@ -50,10 +53,15 @@ cards = { club_A:1, club_2:2, club_3:3, club_4:4, club_5:5, club_6:6, club_7:7,
 def draw_window():
     WIN.fill(GREEN)
     pygame.display.update()
+
+def getValue(card):
+    return 
     
 def main():
 
-    #cards = [club_J, club_A, club_2, club_3]
+    userScore = cards.get(club_A)
+    dealerScore = 0
+
     userCard = []
     dealCard = []
 
@@ -63,6 +71,11 @@ def main():
     dealCard.append(random.choice(list(cards)))
     dealCard.append(random.choice(list(cards)))
 
+    
+    userScoreText = font.render("Player: " + str(userScore), False, (255,255,255))
+    dealScoreText = font.render("House: " + str(dealerScore), False, (255,255,255))
+
+    # Main loop
     clock = pygame.time.Clock()
     run = True
     while run:
@@ -73,6 +86,8 @@ def main():
 
         draw_window()
 
+        WIN.blit(userScoreText, (10,400))
+        WIN.blit(dealScoreText, (10,100))
 
         for card in dealCard:
             WIN.blit(card, (350, 100))
@@ -81,7 +96,6 @@ def main():
         for card in userCard:
             x = 350 + (userCard.index(card)*60)
             WIN.blit(card, (x, 400))
-            #WIN.blit(card, (410,400))
 
         pygame.display.update()
 
