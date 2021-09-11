@@ -48,10 +48,21 @@ PURPLE = (127,0,255)
 clock = pygame.time.Clock()
 
 cards = { club_A:1, club_2:2, club_3:3, club_4:4, club_5:5, club_6:6, club_7:7, 
-        club_8:8, club_9:9, club_J:10, club_Q:11, club_K:12 }
+        club_8:8, club_9:9, club_10:10, club_J:11, club_Q:12, club_K:13 }
 
 def getValue(card):
-    return cards.get(card)
+    cardV = cards.get(card)
+    if cardV % 13 == 11: 
+        return 10
+    elif cardV % 13 == 12:
+        return 10
+    elif cardV % 13 == 0:
+        return 10
+    elif cardV % 13 == 1:
+        return 11
+    else:
+        return cardV
+        
 
 def startingHand(cards, user, deal):
 
@@ -63,8 +74,8 @@ def startingHand(cards, user, deal):
     dealCard2 = random.choice(list(cards))
     dealHand = [dealCard1,dealCard2]
 
-    userSum = cards.get(userCard1) + cards.get(userCard2)
-    dealSum = cards.get(dealCard1) + cards.get(dealCard2)
+    userSum = getValue(userCard1) + getValue(userCard2)
+    dealSum = getValue(dealCard1) + getValue(dealCard2)
 
     return userSum, userHand, dealSum, dealHand
     
@@ -86,12 +97,14 @@ def main():
     # Text
     gameoverText = font.render("Restart? ", True, PURPLE)
     hitText = font.render("Hit Me!", 1, BLACK)
+    standText = font.render("Stand", 1, BLACK)
 
     # Populate background
     background = pygame.Surface(WIN.get_size())
     background = background.convert()
     background.fill(GREEN)
     hitButton = pygame.draw.rect(background, PURPLE, (635, 400, 150, 50))
+    standButton = pygame.draw.rect(background, (255, 0, 0), (235, 400, 150, 50))
 
     userScore, userCard, dealerScore, dealCard = startingHand(cards, userCard, dealCard)
 
@@ -122,9 +135,9 @@ def main():
 
 
         for card in dealCard:
-            #dealerScore = 10 #+= getValue(card)
-            WIN.blit(card, (350, 100))
-        WIN.blit(cBack, (410,100))
+            x = 350 + (dealCard.index(card)*60)
+            WIN.blit(card, (x, 100)) # was 350
+        #WIN.blit(cBack, (410,100))
 
         for card in userCard:
             #userScore += getValue(card)
