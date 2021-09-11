@@ -81,6 +81,7 @@ def startingHand(cards, user, deal):
     
 def main():
 
+    winner = False
 
     userScore = 0
     dealerScore = 0
@@ -95,16 +96,18 @@ def main():
     pygame.display.set_caption("Blackjack!")
 
     # Text
-    gameoverText = font.render("Restart? ", True, PURPLE)
+    gameoverText = font.render("House Wins! ", True, PURPLE)
+    winnerText = font.render("You WIN! ", True, PURPLE)
     hitText = font.render("Hit Me!", 1, BLACK)
     standText = font.render("Stand", 1, BLACK)
+    restartText = font.render("Restart?", 1, BLACK)
 
     # Populate background
     background = pygame.Surface(WIN.get_size())
     background = background.convert()
     background.fill(GREEN)
     hitButton = pygame.draw.rect(background, PURPLE, (635, 400, 150, 50))
-    standButton = pygame.draw.rect(background, (255, 0, 0), (235, 400, 150, 50))
+    standButton = pygame.draw.rect(background, (255, 0, 0), (215, 400, 120, 50))
 
     userScore, userCard, dealerScore, dealCard = startingHand(cards, userCard, dealCard)
 
@@ -113,12 +116,34 @@ def main():
     # Main loop
     while True:
         gameover = True  if (userScore >= 21) else False
+        if len(dealCard) == 2 and dealerScore == 21:
+            gameover = True
+        elif len(userCard) == 2 and userScore == 21:
+            gameover = True
+            winner = True
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            
             elif event.type == pygame.MOUSEBUTTONDOWN and not (gameover) and hitButton.collidepoint(pygame.mouse.get_pos()):
-                userCard.append(random.choice(list(cards)))
+                card1 = random.choice(list(cards))
+                userCard.append(card1)
+                userScore += getValue(card1) 
+                if userScore > 21:
+                    gameover = True
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN and not (gameover) and standButton.collidepoint(pygame.mouse.get_pos()):
+                if dealerScore < 17:
+                    card1 = random.choice(list(cards))
+                    dealCard.append(card1)
+                    dealerScore += getValue(card1)
+                    if dealerScore > 21:
+                        gameover = True
+                        winner = True
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and not (gameover) and restartButton.collidepoint(pygame.mouse.get_pos()):
+                pass
  #           else:
   #              for card in userCard:
    #                 userScore += getValue(card)
@@ -128,6 +153,7 @@ def main():
         #draw_window()
         WIN.blit(background, (0,0))
         WIN.blit(hitText, (650, 400))
+        WIN.blit(standText, (220, 400))
         userScoreText = font.render("Player: " + str(userScore), False, (255,255,255))
         dealScoreText = font.render("House: " + str(dealerScore), False, (255,255,255))
         WIN.blit(userScoreText, (10,400))
@@ -145,8 +171,12 @@ def main():
             WIN.blit(card, (x, 400))
         
         if gameover:
-            background.blit(gameoverText, (250,250))
-            restartB = pygame.draw.rect(background, WHITE, (WIDTH/2, HEIGHT/2, 140, 40))
+            restartButton = pygame.draw.rect(background, PURPLE, (WIDTH/2, HEIGHT/2, 140, 40))
+            WIN.blit(restartText, (WIDTH/2, HEIGHT/2))
+            if winner == False:
+                background.blit(gameoverText, (250,250))
+            else:
+                background.blit(winnerText, (250,250))
 
         
 
