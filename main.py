@@ -2,13 +2,9 @@ import pygame
 import random
 import os
 
-pygame.font.init()
 
 WIDTH, HEIGHT = 900, 600
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 CARD_WIDTH, CARD_HEIGHT = 120, 160
-font = pygame.font.SysFont('Comic Sans MS', 32)
-pygame.display.set_caption("Blackjack!")
 
 # Image Loading
 cBackO = pygame.image.load(os.path.join('images', 'card_face_down.png'))
@@ -51,19 +47,29 @@ WHITE = (255,255,255)
 PURPLE = (127,0,255)
 clock = pygame.time.Clock()
 
-gameoverText = font.render("Restart? ", True, PURPLE)
-
 cards = { club_A:1, club_2:2, club_3:3, club_4:4, club_5:5, club_6:6, club_7:7, 
         club_8:8, club_9:9, club_J:10, club_Q:11, club_K:12 }
 
-def draw_window():
-    WIN.fill(GREEN)
-    pygame.display.update()
-
 def getValue(card):
     return cards.get(card)
+
+def startingHand(cards, user, deal):
+
+    userCard1 = random.choice(list(cards))
+    userCard2 = random.choice(list(cards))
+    userHand = [userCard1,userCard2]
+
+    dealCard1 = random.choice(list(cards))
+    dealCard2 = random.choice(list(cards))
+    dealHand = [dealCard1,dealCard2]
+
+    userSum = cards.get(userCard1) + cards.get(userCard2)
+    dealSum = cards.get(dealCard1) + cards.get(dealCard2)
+
+    return userSum, userHand, dealSum, dealHand
     
 def main():
+
 
     userScore = 0
     dealerScore = 0
@@ -71,31 +77,48 @@ def main():
     userCard = []
     dealCard = []
 
-    userCard.append(random.choice(list(cards)))
-    userCard.append(random.choice(list(cards)))
+    # Start Game
+    pygame.init()
+    WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+    font = pygame.font.SysFont('Comic Sans MS', 32)
+    pygame.display.set_caption("Blackjack!")
 
-    dealCard.append(random.choice(list(cards)))
-    dealCard.append(random.choice(list(cards)))
+    # Text
+    gameoverText = font.render("Restart? ", True, PURPLE)
+    hitText = font.render("Hit Me!", 1, BLACK)
 
-    
+    # Populate background
+    background = pygame.Surface(WIN.get_size())
+    background = background.convert()
+    background.fill(GREEN)
+    hitButton = pygame.draw.rect(background, PURPLE, (635, 400, 150, 50))
+
+    userScore, userCard, dealerScore, dealCard = startingHand(cards, userCard, dealCard)
+
 
 
     # Main loop
     while True:
         gameover = True  if (userScore >= 21) else False
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-            elif event.type == pygame.MOUSEBUTTONDOWN and gameover and restartB.collidepoint(pygame.mouse.get_pos()):
-                gameover = True
+            elif event.type == pygame.MOUSEBUTTONDOWN and not (gameover) and hitButton.collidepoint(pygame.mouse.get_pos()):
+                userCard.append(random.choice(list(cards)))
+ #           else:
+  #              for card in userCard:
+   #                 userScore += getValue(card)
+                    
+                #gameover = True
 
-        draw_window()
+        #draw_window()
+        WIN.blit(background, (0,0))
+        WIN.blit(hitText, (650, 400))
         userScoreText = font.render("Player: " + str(userScore), False, (255,255,255))
         dealScoreText = font.render("House: " + str(dealerScore), False, (255,255,255))
         WIN.blit(userScoreText, (10,400))
         WIN.blit(dealScoreText, (10,100))
-
 
 
         for card in dealCard:
@@ -109,8 +132,10 @@ def main():
             WIN.blit(card, (x, 400))
         
         if gameover:
-            WIN.blit(gameoverText, (250,250))
-            restartB = pygame.draw.rect(WIN, WHITE, (WIDTH/2, HEIGHT/2, 140, 40))
+            background.blit(gameoverText, (250,250))
+            restartB = pygame.draw.rect(background, WHITE, (WIDTH/2, HEIGHT/2, 140, 40))
+
+        
 
         pygame.display.update()
         clock.tick(10)
