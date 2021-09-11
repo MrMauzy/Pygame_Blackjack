@@ -96,7 +96,7 @@ def main():
     pygame.display.set_caption("Blackjack!")
 
     # Text
-    gameoverText = font.render("House Wins! ", True, PURPLE)
+    
     winnerText = font.render("You WIN! ", True, PURPLE)
     hitText = font.render("Hit Me!", 1, BLACK)
     standText = font.render("Stand", 1, BLACK)
@@ -106,8 +106,8 @@ def main():
     background = pygame.Surface(WIN.get_size())
     background = background.convert()
     background.fill(GREEN)
-    hitButton = pygame.draw.rect(background, PURPLE, (635, 400, 150, 50))
-    standButton = pygame.draw.rect(background, (255, 0, 0), (215, 400, 120, 50))
+    hitButton = pygame.draw.rect(background, PURPLE, (550, 400, 150, 50))
+    standButton = pygame.draw.rect(background, (255, 0, 0), (205, 400, 110, 50))
 
     userScore, userCard, dealerScore, dealCard = startingHand(cards, userCard, dealCard)
 
@@ -132,6 +132,9 @@ def main():
                 userScore += getValue(card1) 
                 if userScore > 21:
                     gameover = True
+                elif userScore == 21:
+                    gameover = True
+                    winner = True
             
             elif event.type == pygame.MOUSEBUTTONDOWN and not (gameover) and standButton.collidepoint(pygame.mouse.get_pos()):
                 if dealerScore < 17:
@@ -141,6 +144,15 @@ def main():
                     if dealerScore > 21:
                         gameover = True
                         winner = True
+                    elif dealerScore == 21:
+                        gameover = True
+                elif userScore > dealerScore:
+                    gameover = True
+                    winner = True
+                elif userScore == dealerScore:
+                    pass
+                else:
+                    gameover = True
 
             elif event.type == pygame.MOUSEBUTTONDOWN and not (gameover) and restartButton.collidepoint(pygame.mouse.get_pos()):
                 pass
@@ -152,18 +164,17 @@ def main():
 
         #draw_window()
         WIN.blit(background, (0,0))
-        WIN.blit(hitText, (650, 400))
+        WIN.blit(hitText, (560, 400))
         WIN.blit(standText, (220, 400))
         userScoreText = font.render("Player: " + str(userScore), False, (255,255,255))
-        dealScoreText = font.render("House: " + str(dealerScore), False, (255,255,255))
-        WIN.blit(userScoreText, (10,400))
-        WIN.blit(dealScoreText, (10,100))
+        WIN.blit(userScoreText, (10,300))
+        
 
 
         for card in dealCard:
-            x = 350 + (dealCard.index(card)*60)
-            WIN.blit(card, (x, 100)) # was 350
-        #WIN.blit(cBack, (410,100))
+            #x = 350 + (dealCard.index(card)*60)
+            WIN.blit(card, (350, 100)) # was 350
+        WIN.blit(cBack, (410,100))
 
         for card in userCard:
             #userScore += getValue(card)
@@ -173,10 +184,13 @@ def main():
         if gameover:
             restartButton = pygame.draw.rect(background, PURPLE, (WIDTH/2, HEIGHT/2, 140, 40))
             WIN.blit(restartText, (WIDTH/2, HEIGHT/2))
+            dealScoreText = font.render("House: " + str(dealerScore), False, (255,255,255))
+            WIN.blit(dealScoreText, (10,100))
             if winner == False:
-                background.blit(gameoverText, (250,250))
+                gameoverText = font.render("House Wins! ", True, PURPLE)
             else:
-                background.blit(winnerText, (250,250))
+                gameoverText = font.render("YOU WON!!! ", True, PURPLE)
+            background.blit(gameoverText, (250,250))
 
         
 
