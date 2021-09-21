@@ -24,8 +24,8 @@ club_KO = pygame.image.load(os.path.join('images', 'club_13.png'))
 
 # Image resize
 cBack = pygame.transform.scale(cBackO, (CARD_WIDTH, CARD_HEIGHT))
-club_A = pygame.transform.scale(club_AO, (CARD_WIDTH, CARD_HEIGHT))
-club_2 = pygame.transform.scale(club_2O, (CARD_WIDTH, CARD_HEIGHT))
+club_A = pygame.transform.scale(club_AO, (CARD_WIDTH, CARD_HEIGHT)) # was 53 x 73
+club_2 = pygame.transform.scale(club_2O, (CARD_WIDTH, CARD_HEIGHT)) # x3 is 159x219
 club_3 = pygame.transform.scale(club_3O, (CARD_WIDTH, CARD_HEIGHT))
 club_4 = pygame.transform.scale(club_4O, (CARD_WIDTH, CARD_HEIGHT))
 club_5 = pygame.transform.scale(club_5O, (CARD_WIDTH, CARD_HEIGHT))
@@ -85,7 +85,8 @@ def main():
 
     userScore = 0
     dealerScore = 0
-
+    userWin = 0
+    dealWin = 0
     userCard = []
     dealCard = []
 
@@ -100,7 +101,7 @@ def main():
     winnerText = font.render("You WIN! ", True, PURPLE)
     hitText = font.render("Hit Me!", 1, BLACK)
     standText = font.render("Stand", 1, BLACK)
-    restartText = font.render("Restart?", 1, BLACK)
+    restartText = font.render("Restart?", 1, WHITE)
 
     # Populate background
     background = pygame.Surface(WIN.get_size())
@@ -155,12 +156,21 @@ def main():
                     gameover = True
 
             elif event.type == pygame.MOUSEBUTTONDOWN and not (gameover) and restartButton.collidepoint(pygame.mouse.get_pos()):
-                pass
- #           else:
-  #              for card in userCard:
-   #                 userScore += getValue(card)
-                    
-                #gameover = True
+                if userScore == dealerScore:
+                    pass
+                elif userScore <= 21 and len(userCard) == 5:
+                    userWin += 1
+                elif userScore <= 21 and userScore > dealerScore or dealerScore > 21:
+                    userWin += 1
+                else:
+                    dealWin += 1
+
+                gameover = False
+                userScore = 0
+                dealerScore = 0
+                userCard = []
+                dealCard = []
+                userScore, userCard, dealerScore, dealCard = startingHand(cards, userCard, dealCard)
 
         #draw_window()
         WIN.blit(background, (0,0))
@@ -182,8 +192,8 @@ def main():
             WIN.blit(card, (x, 400))
         
         if gameover:
-            restartButton = pygame.draw.rect(background, PURPLE, (WIDTH/2, HEIGHT/2, 140, 40))
-            WIN.blit(restartText, (WIDTH/2, HEIGHT/2))
+            restartButton = pygame.draw.rect(background, BLACK, (WIDTH/2, HEIGHT/2, 140, 40))
+            WIN.blit(restartText, ((WIDTH/2 + 5), HEIGHT/2))
             dealScoreText = font.render("House: " + str(dealerScore), False, (255,255,255))
             WIN.blit(dealScoreText, (10,100))
             if winner == False:
