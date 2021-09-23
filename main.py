@@ -101,7 +101,7 @@ def main():
     winnerText = font.render("You WIN! ", True, PURPLE)
     hitText = font.render("Hit Me!", 1, BLACK)
     standText = font.render("Stand", 1, BLACK)
-    restartText = font.render("Restart?", 1, WHITE)
+    restartText = font.render("Restart?", 1, GREEN)
 
     # Populate background
     background = pygame.Surface(WIN.get_size())
@@ -166,11 +166,15 @@ def main():
                     dealWin += 1
 
                 gameover = False
+                winner = False
                 userScore = 0
                 dealerScore = 0
                 userCard = []
                 dealCard = []
                 userScore, userCard, dealerScore, dealCard = startingHand(cards, userCard, dealCard)
+                background.fill(GREEN)
+                #restartButton = pygame.draw.rect(background, GREEN, (WIDTH/2, HEIGHT/2, 140, 40))
+
 
         #draw_window()
         WIN.blit(background, (0,0))
@@ -207,13 +211,6 @@ def main():
         pygame.display.update()
         clock.tick(10)
 
-
-        
-
-
-
-
-    pygame.quit()
 
 if __name__ == "__main__":
     main()
